@@ -17,9 +17,6 @@ This repo contains public implementations of EXD commons library, including base
 ## License
 The codes in the repository are released with [MIT License](LICENSE).
 
-## Step By Step Guide
-[Step By Step Guide CN](guide_cn.md)
-
 ## Getting Help
 For usage questions, the best place to go to is [Github issues](https://github.com/exceeddata/commons-public/issues). For customers of EXCEEDDATA commercial solutions, you can contact [support](mailto:support@smartsct.com) for questions or support.
 
