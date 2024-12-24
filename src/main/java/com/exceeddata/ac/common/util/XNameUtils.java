@@ -88,13 +88,13 @@ public final class XNameUtils {
         return contents.toArray(new String[]{});
     }
     
-    public static final String constructNames(final String[] nameList) {
-        final StringBuilder sb = new StringBuilder(nameList.length * 24);
+    public static final String constructNames(final String[] names) {
+        final StringBuilder sb = new StringBuilder();
         final StringBuilder tb = new StringBuilder(128);
         boolean specialCharacters;
         char c;
         
-        for (final String name : nameList) {
+        for (final String name : names) {
             if (XStringUtils.isBlank(name)) {
                 continue;
             }
@@ -102,25 +102,66 @@ public final class XNameUtils {
             specialCharacters = false;
             tb.setLength(0);
             for (int i = 0, s = name.length(); i < s; ++i) {
-                switch(c = name.charAt(i)) {
-                    case ESCAPER:
+                c = name.charAt(i);
+                if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_') {
+                    tb.append(c);
+                } else if ((c >= '0' && c <= '9') || c == '.') {
+                    tb.append(c);
+                    if (i == 0) {
                         specialCharacters = true;
-                        tb.append(ESCAPER).append(ESCAPER);
-                        break;
-                    case QUOTER:
-                        specialCharacters = true;
-                        tb.append(QUOTER).append(QUOTER);
-                        break;
-                    case SEPARATOR:
-                        specialCharacters = true;
-                        tb.append(SEPARATOR);
-                        break;
-                    default:
-                        tb.append(c);
+                    }
+                } else if (c == ESCAPER || c == QUOTER) {
+                    tb.append(c).append(c);
+                    specialCharacters = true;
+                } else {
+                    tb.append(c);
+                    specialCharacters = true;
                 }
             }
             if (specialCharacters) {
                 sb.append(QUOTER).append(tb).append(QUOTER).append(SEPARATOR);
+            } else {
+                sb.append(tb).append(SEPARATOR);
+            }
+        }
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 1);
+        }
+        return sb.toString();
+    }
+    
+    public static final String constructSelects(final String[] names) {
+        final StringBuilder sb = new StringBuilder();
+        final StringBuilder tb = new StringBuilder(128);
+        boolean specialCharacters;
+        char c;
+        
+        for (final String name : names) {
+            if (XStringUtils.isBlank(name)) {
+                continue;
+            }
+            
+            specialCharacters = false;
+            tb.setLength(0);
+            for (int i = 0, s = name.length(); i < s; ++i) {
+                c = name.charAt(i);
+                if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_') {
+                    tb.append(c);
+                } else if ((c >= '0' && c <= '9') || c == '.') {
+                    tb.append(c);
+                    if (i == 0) {
+                        specialCharacters = true;
+                    }
+                } else if (c == ESCAPER || c == QUOTER) {
+                    tb.append(c).append(c);
+                    specialCharacters = true;
+                } else {
+                    tb.append(c);
+                    specialCharacters = true;
+                }
+            }
+            if (specialCharacters) {
+                sb.append("n'").append(tb).append("'").append(SEPARATOR);
             } else {
                 sb.append(tb).append(SEPARATOR);
             }
